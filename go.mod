@@ -1,7 +1,5 @@
-module donut.com/m
+module github.com/JoaoLobo94/donut_test
 
-go 1.17
+go 1.16
 
-require (
-	github.com/lib/pq v1.10.4 // indirect
-)
+require github.com/lib/pq v1.10.4
