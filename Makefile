@@ -16,6 +16,6 @@ dropdb:
 	docker exec -it postgres_donut_db dropdb --username=$(POSTGRES_USER) donut_db
 
 migratedb:
-	migrate -path db/migration -database "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5433/donut_db?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5433/donut_db?sslmode=$(SSLMODE)" -verbose up
 
 .PHONY: install_golang_migrate pull_postgres run_postgres createdb dropdb
