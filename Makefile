@@ -21,4 +21,7 @@ dropdb:
 migratedb:
 	migrate -path db/migration -database "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5433/donut_db?sslmode=$(SSLMODE)" -verbose up
 
-.PHONY: install_golang_migrate pull_postgres run_postgres createdb dropdb
+sqlc:
+	sqlc generate
+
+.PHONY: install_golang_migrate install sqlc pull_postgres run_postgres createdb dropdb sqlc
