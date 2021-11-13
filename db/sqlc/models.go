@@ -16,7 +16,7 @@ type BankTransaction struct {
 
 type Batch struct {
 	ID         int32
-	Dispatched sql.NullBool
+	Dispatched bool
 	Amount     float64
 	UserID     sql.NullInt32
 	CreatedAt  time.Time
