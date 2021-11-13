@@ -20,7 +20,7 @@ RETURNING id, dispatched, amount, user_id, created_at
 type CreateBatchParams struct {
 	Dispatched sql.NullBool
 	Amount     float64
-	UserID     sql.NullInt64
+	UserID     sql.NullInt32
 }
 
 func (q *Queries) CreateBatch(ctx context.Context, arg CreateBatchParams) (Batch, error) {
