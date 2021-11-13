@@ -13,3 +13,7 @@ INSERT INTO batches (
   $1, $2, $3
 )
 RETURNING *;
+
+-- name: UpdateBatch :exec
+UPDATE batches SET bio = $2
+WHERE id = $1;
