@@ -12,7 +12,7 @@ import (
 var testQueries *Queries
 
 func init() {
-	err := godotenv.Load("/Users/joao/Code/donut/coding_exam/.env")
+	err := godotenv.Load("../../.env")
     
 	if err != nil {
 	    log.Fatal("Error loading .env file")
