@@ -1,4 +1,4 @@
-CREATE TABLE "public"."bankTransactions" (
+CREATE TABLE "public"."bank_transactions" (
     "id" integer GENERATED ALWAYS AS IDENTITY,
     "amount" float,
     "user_id" integer,
