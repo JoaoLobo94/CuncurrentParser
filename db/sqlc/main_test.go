@@ -20,7 +20,7 @@ func init() {
     }
 func TestMain(m *testing.M) {
 	var user, password, sslmode = os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("SSLMODE")
-	conn, err := sql.Open("postgres", "postgresql://" + user + ":" + password + "@localhost:5433/donut_db?sslmode=" + sslmode)
+	conn, err := sql.Open("postgres", "postgresql://" + user + ":" + password + "@localhost:5433/donut_db_test?sslmode=" + sslmode)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
