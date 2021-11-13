@@ -4,7 +4,7 @@ WHERE id = $1 LIMIT 1;
 
 -- name: ListBank_Transactions :many
 SELECT * FROM bank_transactions
-ORDER BY name;
+ORDER BY id;
 
 -- name: CreateBank_Transaction :one
 INSERT INTO bank_transactions (

@@ -4,7 +4,7 @@ WHERE id = $1 LIMIT 1;
 
 -- name: ListBatches :many
 SELECT * FROM batches
-ORDER BY name;
+ORDER BY id;
 
 -- name: CreateBatch :one
 INSERT INTO batches (
