@@ -19,7 +19,7 @@ RETURNING id, amount, user_id, created_at
 
 type CreateBank_TransactionParams struct {
 	Amount sql.NullFloat64
-	UserID sql.NullInt32
+	UserID int32
 }
 
 func (q *Queries) CreateBank_Transaction(ctx context.Context, arg CreateBank_TransactionParams) (BankTransaction, error) {

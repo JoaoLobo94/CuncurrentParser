@@ -10,7 +10,7 @@ import (
 type BankTransaction struct {
 	ID        int32
 	Amount    sql.NullFloat64
-	UserID    sql.NullInt32
+	UserID    int32
 	CreatedAt time.Time
 }
 
@@ -18,14 +18,14 @@ type Batch struct {
 	ID         int32
 	Dispatched bool
 	Amount     float64
-	UserID     sql.NullInt32
+	UserID     int32
 	CreatedAt  time.Time
 }
 
 type Transaction struct {
 	ID        int32
 	Amount    sql.NullFloat64
-	UserID    sql.NullInt64
+	UserID    int32
 	CreatedAt time.Time
 }
 

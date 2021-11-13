@@ -5,7 +5,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createBatch = `-- name: CreateBatch :one
@@ -20,7 +19,7 @@ RETURNING id, dispatched, amount, user_id, created_at
 type CreateBatchParams struct {
 	Dispatched bool
 	Amount     float64
-	UserID     sql.NullInt32
+	UserID     int32
 }
 
 func (q *Queries) CreateBatch(ctx context.Context, arg CreateBatchParams) (Batch, error) {
