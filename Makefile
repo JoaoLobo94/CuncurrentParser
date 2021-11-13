@@ -3,6 +3,9 @@ include .env
 install_golang_migrate:
 	brew install golang-migrate
 
+install_sqlc:
+	brew install sqlc
+
 pullpostgres:
 	docker pull postgres
 
