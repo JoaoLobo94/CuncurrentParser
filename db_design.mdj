@@ -1261,7 +1261,7 @@
 											"top": 319,
 											"width": 174,
 											"height": 13,
-											"text": "bank_transactions"
+											"text": "actions"
 										},
 										{
 											"_type": "LabelView",
@@ -1657,7 +1657,8 @@
 							"_parent": {
 								"$ref": "AAAAAAF9ELXHHXUNkDw="
 							},
-							"name": "created_at"
+							"name": "created_at",
+							"type": ""
 						}
 					]
 				},
@@ -1727,7 +1728,8 @@
 							"_parent": {
 								"$ref": "AAAAAAF9ELYQgnU5dPk="
 							},
-							"name": "created_at"
+							"name": "created_at",
+							"type": ""
 						}
 					]
 				},
@@ -1802,7 +1804,8 @@
 							"_parent": {
 								"$ref": "AAAAAAF9ELZmS3VjWY8="
 							},
-							"name": "created_at"
+							"name": "created_at",
+							"type": ""
 						}
 					]
 				},
@@ -1820,7 +1823,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "bank_transactions",
+					"name": "actions",
 					"attributes": [
 						{
 							"_type": "UMLAttribute",
@@ -1855,7 +1858,8 @@
 							"_parent": {
 								"$ref": "AAAAAAF9GMh398TTQzg="
 							},
-							"name": "created_at"
+							"name": "created_at",
+							"type": ""
 						}
 					]
 				}

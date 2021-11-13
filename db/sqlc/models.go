@@ -7,9 +7,9 @@ import (
 	"time"
 )
 
-type BankTransaction struct {
+type Action struct {
 	ID        int32
-	Amount    sql.NullFloat64
+	Amount    float64
 	UserID    int32
 	CreatedAt time.Time
 }
