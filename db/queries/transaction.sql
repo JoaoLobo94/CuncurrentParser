@@ -1,7 +1,3 @@
--- name: GetTransaction :one
-SELECT * FROM transactions
-WHERE id = $1 LIMIT 1;
-
 -- name: ListTransactions :many
 SELECT * FROM transactions
 ORDER BY id;

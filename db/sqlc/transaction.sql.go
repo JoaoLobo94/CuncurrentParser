@@ -34,23 +34,6 @@ func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionPa
 	return i, err
 }
 
-const getTransaction = `-- name: GetTransaction :one
-SELECT id, amount, user_id, created_at FROM transactions
-WHERE id = $1 LIMIT 1
-`
-
-func (q *Queries) GetTransaction(ctx context.Context, id int32) (Transaction, error) {
-	row := q.db.QueryRowContext(ctx, getTransaction, id)
-	var i Transaction
-	err := row.Scan(
-		&i.ID,
-		&i.Amount,
-		&i.UserID,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
 const listTransactions = `-- name: ListTransactions :many
 SELECT id, amount, user_id, created_at FROM transactions
 ORDER BY id
