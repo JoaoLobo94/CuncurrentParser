@@ -5,7 +5,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createTransaction = `-- name: CreateTransaction :one
@@ -18,7 +17,7 @@ RETURNING id, amount, user_id, created_at
 `
 
 type CreateTransactionParams struct {
-	Amount sql.NullFloat64
+	Amount float64
 	UserID int32
 }
 
