@@ -1,6 +1,6 @@
 CREATE TABLE "public"."batches" (
     "id" integer GENERATED ALWAYS AS IDENTITY,
-    "dispatches" boolean,
+    "dispatched" boolean,
     "amount" float,
     "user_id" bigint,
     PRIMARY KEY ("id"),
