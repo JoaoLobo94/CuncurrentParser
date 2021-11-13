@@ -87,3 +87,20 @@ func (q *Queries) ListBatches(ctx context.Context) ([]Batch, error) {
 	}
 	return items, nil
 }
+
+const updateBatch = `-- name: UpdateBatch :exec
+UPDATE batches 
+SET amount= $2, dispatched= $3
+WHERE id = $1
+`
+
+type UpdateBatchParams struct {
+	ID         int32
+	Amount     float64
+	Dispatched sql.NullBool
+}
+
+func (q *Queries) UpdateBatch(ctx context.Context, arg UpdateBatchParams) error {
+	_, err := q.db.ExecContext(ctx, updateBatch, arg.ID, arg.Amount, arg.Dispatched)
+	return err
+}

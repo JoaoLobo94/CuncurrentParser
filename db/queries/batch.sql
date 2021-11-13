@@ -15,5 +15,6 @@ INSERT INTO batches (
 RETURNING *;
 
 -- name: UpdateBatch :exec
-UPDATE batches SET bio = $2
+UPDATE batches 
+SET amount= $2, dispatched= $3
 WHERE id = $1;
