@@ -3,7 +3,6 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -31,6 +30,6 @@ type Transaction struct {
 
 type User struct {
 	ID        int32
-	Name      sql.NullString
+	Name      string
 	CreatedAt time.Time
 }

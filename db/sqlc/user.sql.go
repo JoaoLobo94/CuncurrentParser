@@ -5,7 +5,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -16,7 +15,7 @@ INSERT INTO users (
 ) RETURNING id, name, created_at
 `
 
-func (q *Queries) CreateUser(ctx context.Context, name sql.NullString) (User, error) {
+func (q *Queries) CreateUser(ctx context.Context, name string) (User, error) {
 	row := q.db.QueryRowContext(ctx, createUser, name)
 	var i User
 	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)

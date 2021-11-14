@@ -2,15 +2,15 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
+
 	"github.com/pioz/faker"
 	"github.com/stretchr/testify/require"
 )
 
-func CreateRandomUser(t *testing.T) User{
-	name := sql.NullString{String: faker.Username(), Valid: true}
+func CreateRandomUser(t *testing.T) User {
+	name := faker.Username()
 	user, err := testQueries.CreateUser(context.Background(), name)
 	require.NoError(t, err)
 	require.NotEmpty(t, user)
@@ -22,11 +22,11 @@ func CreateRandomUser(t *testing.T) User{
 
 }
 
-func TestCreateUser(t *testing.T){
+func TestCreateUser(t *testing.T) {
 	CreateRandomUser(t)
 }
 
-func TestGetUser(t *testing.T){
+func TestGetUser(t *testing.T) {
 	user1 := CreateRandomUser(t)
 	user2, err := testQueries.GetUser(context.Background(), user1.ID)
 	require.NoError(t, err)
