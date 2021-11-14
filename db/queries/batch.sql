@@ -18,3 +18,6 @@ RETURNING *;
 UPDATE batches 
 SET amount= $2, dispatched= $3
 WHERE id = $1;
+
+-- name: DeleteBatches :exec
+DELETE FROM batches;

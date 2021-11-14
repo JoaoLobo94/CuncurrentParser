@@ -33,6 +33,15 @@ func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionPa
 	return i, err
 }
 
+const deleteTransactions = `-- name: DeleteTransactions :exec
+DELETE FROM transactions
+`
+
+func (q *Queries) DeleteTransactions(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, deleteTransactions)
+	return err
+}
+
 const listTransactions = `-- name: ListTransactions :many
 SELECT id, amount, user_id, created_at FROM transactions
 ORDER BY id

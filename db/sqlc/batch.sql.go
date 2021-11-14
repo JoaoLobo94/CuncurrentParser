@@ -35,6 +35,15 @@ func (q *Queries) CreateBatch(ctx context.Context, arg CreateBatchParams) (Batch
 	return i, err
 }
 
+const deleteBatches = `-- name: DeleteBatches :exec
+DELETE FROM batches
+`
+
+func (q *Queries) DeleteBatches(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, deleteBatches)
+	return err
+}
+
 const getBatch = `-- name: GetBatch :one
 SELECT id, dispatched, amount, user_id, created_at FROM batches
 WHERE id = $1 LIMIT 1

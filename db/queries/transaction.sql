@@ -9,3 +9,6 @@ INSERT INTO transactions (
   $1, $2
 )
 RETURNING *;
+
+-- name: DeleteTransactions :exec
+DELETE FROM transactions;

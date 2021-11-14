@@ -13,3 +13,6 @@ INSERT INTO actions (
   $1, $2
 )
 RETURNING *;
+
+-- name: DeleteActions :exec
+DELETE FROM actions;

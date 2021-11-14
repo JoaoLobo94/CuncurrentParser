@@ -33,6 +33,15 @@ func (q *Queries) CreateAction(ctx context.Context, arg CreateActionParams) (Act
 	return i, err
 }
 
+const deleteActions = `-- name: DeleteActions :exec
+DELETE FROM actions
+`
+
+func (q *Queries) DeleteActions(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, deleteActions)
+	return err
+}
+
 const getAction = `-- name: GetAction :one
 SELECT id, amount, user_id, created_at FROM actions
 WHERE id = $1 LIMIT 1
