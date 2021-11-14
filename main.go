@@ -24,7 +24,5 @@ func main() {
 	}
 	
 	queries := db.New(conn)
-
 	util.Generate(context.Background(), queries)
-	util.Prompt(context.Background(), queries)
 }
