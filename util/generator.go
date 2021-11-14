@@ -29,10 +29,10 @@ func initializePromptWithData(ctx context.Context, queries *db.Queries, user db.
 			UserID: user.ID,
 		})
 	}
+
+	fmt.Println("You just created ", len(result), " fake bank transactions")
 	
-	fmt.Println("You just created ",len(result)," fake bank transactions")
-	startBatches(ctx, queries, user.ID)
-	Prompt(ctx, queries, user.ID)
+	Prompt(ctx, queries, user.ID, StartBatches(ctx, queries, user.ID).ID)
 }
 
 func generateUser(ctx context.Context, queries *db.Queries) db.User {
@@ -47,6 +47,10 @@ func generateUser(ctx context.Context, queries *db.Queries) db.User {
 	return user
 }
 
-func startBatches(ctx context.Context, queries *db.Queries, current_user int32) {
-	queries.CreateBatch(ctx, db.CreateBatchParams{UserID: current_user})
+func StartBatches(ctx context.Context, queries *db.Queries, current_user int32) db.Batch {
+	batch, err := queries.CreateBatch(ctx, db.CreateBatchParams{UserID: current_user})
+	if err != nil {
+		log.Fatal(err)
+	}
+	return batch
 }
