@@ -4,7 +4,7 @@ WHERE id = $1 LIMIT 1;
 
 -- name: ListActions :many
 SELECT * FROM actions
-ORDER BY id;
+ORDER BY amount;
 
 -- name: CreateAction :one
 INSERT INTO actions (

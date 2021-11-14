@@ -61,7 +61,7 @@ func (q *Queries) GetAction(ctx context.Context, id int32) (Action, error) {
 
 const listActions = `-- name: ListActions :many
 SELECT id, amount, user_id, created_at FROM actions
-ORDER BY id
+ORDER BY amount
 `
 
 func (q *Queries) ListActions(ctx context.Context) ([]Action, error) {
