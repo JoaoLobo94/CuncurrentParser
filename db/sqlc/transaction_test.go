@@ -26,7 +26,7 @@ func CreateRandomTransaction(t *testing.T) Transaction {
 }
 
 func TestCreateTransaction(t *testing.T) {
-	CreateRandomAction(t)
+	CreateRandomTransaction(t)
 }
 
 func TestListTransaction(t *testing.T) {
@@ -34,7 +34,7 @@ func TestListTransaction(t *testing.T) {
 		CreateRandomTransaction(t)
 	}
 
-	transactions, err := testQueries.ListBatches(context.Background())
+	transactions, err := testQueries.ListTransactions(context.Background())
 	require.NoError(t, err)
 
 	for _, transaction := range transactions {
