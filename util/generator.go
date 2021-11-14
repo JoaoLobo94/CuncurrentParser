@@ -11,16 +11,17 @@ import (
 )
 
 func Generate(ctx context.Context, queries *db.Queries) {
-	randActionAmounts(ctx, queries, generateUser(ctx, queries))
+	initializePromptWithData(ctx, queries, generateUser(ctx, queries))
 }
 
-func randActionAmounts(ctx context.Context, queries *db.Queries, user db.User) {
+func initializePromptWithData(ctx context.Context, queries *db.Queries, user db.User) {
 	rand.Seed(time.Now().UnixNano())
 	var numberToGenerate int
 	fmt.Scanln(&numberToGenerate)
 	min := 0.0
 	max := 99.9
 	result := make([]float64, numberToGenerate)
+	fmt.Println("Seeding... Please be patient")
 	for i := range result {
 		result[i] = min + rand.Float64()*(max-min)
 		queries.CreateAction(ctx, db.CreateActionParams{
@@ -30,6 +31,8 @@ func randActionAmounts(ctx context.Context, queries *db.Queries, user db.User) {
 	}
 	
 	fmt.Println("You just created ",len(result)," fake bank transactions")
+	startBatches(ctx, queries, user.ID)
+	Prompt(ctx, queries, user.ID)
 }
 
 func generateUser(ctx context.Context, queries *db.Queries) db.User {
@@ -42,4 +45,8 @@ func generateUser(ctx context.Context, queries *db.Queries) db.User {
 	}
 	fmt.Printf("Hey " + nameOfUser + " lets get started. How many bank transactions would you to seed? --> ")
 	return user
+}
+
+func startBatches(ctx context.Context, queries *db.Queries, current_user int32) {
+	queries.CreateBatch(ctx, db.CreateBatchParams{UserID: current_user})
 }
