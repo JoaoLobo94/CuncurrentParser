@@ -1,25 +1,30 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
 	"github.com/JoaoLobo94/donut_test/util"
+	"context"
+	"database/sql"
+	"log"
+	"os"
+	"github.com/JoaoLobo94/donut_test/db/sqlc"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
 func main() {
-	connStr := "postgresql://root:1234abcd@localhost:5433/donut_db?sslmode=disable"
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	err := godotenv.Load(".env")
 
-	err = db.Ping()
 	if err != nil {
-		panic(err)
+		log.Fatal("Error loading .env file")
 	}
-	fmt.Printf("\nSuccessfully connected to database!\n")
-	fmt.Println("How many random transactions would you like to generate for this test?: ")
-	fmt.Println(util.RandTransactionAmounts())
+	var user, password, sslmode = os.Getenv("POSTGRES_USER"), os.Getenv("POSTGRES_PASSWORD"), os.Getenv("SSLMODE")
+	conn, err := sql.Open("postgres", "postgresql://"+user+":"+password+"@localhost:5433/donut_db?sslmode="+sslmode)
+	if err != nil {
+		log.Fatal("cannot connect to db:", err)
+	}
+	
+	queries := db.New(conn)
+
+	util.Generate(context.Background(), queries)
+	util.Prompt()
 }
