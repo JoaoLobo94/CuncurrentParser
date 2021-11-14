@@ -3,6 +3,7 @@ module github.com/JoaoLobo94/donut_test
 go 1.16
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.3.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/joho/godotenv v1.4.0
 	github.com/kr/pretty v0.1.0 // indirect
