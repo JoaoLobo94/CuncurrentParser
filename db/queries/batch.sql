@@ -2,6 +2,11 @@
 SELECT * FROM batches
 WHERE id = $1 LIMIT 1;
 
+-- name: ListDispatchedBatches :many
+SELECT * FROM batches
+WHERE dispatched = $1
+ORDER BY id;
+
 -- name: ListBatches :many
 SELECT * FROM batches
 ORDER BY id;

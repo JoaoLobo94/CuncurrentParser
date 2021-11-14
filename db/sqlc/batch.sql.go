@@ -96,6 +96,41 @@ func (q *Queries) ListBatches(ctx context.Context) ([]Batch, error) {
 	return items, nil
 }
 
+const listDispatchedBatches = `-- name: ListDispatchedBatches :many
+SELECT id, dispatched, amount, user_id, created_at FROM batches
+WHERE dispatched = $1
+ORDER BY id
+`
+
+func (q *Queries) ListDispatchedBatches(ctx context.Context, dispatched bool) ([]Batch, error) {
+	rows, err := q.db.QueryContext(ctx, listDispatchedBatches, dispatched)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Batch
+	for rows.Next() {
+		var i Batch
+		if err := rows.Scan(
+			&i.ID,
+			&i.Dispatched,
+			&i.Amount,
+			&i.UserID,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateBatch = `-- name: UpdateBatch :exec
 UPDATE batches 
 SET amount= $2, dispatched= $3
