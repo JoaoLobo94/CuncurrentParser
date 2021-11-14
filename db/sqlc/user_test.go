@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 	"time"
-
 	"github.com/pioz/faker"
 	"github.com/stretchr/testify/require"
 )
