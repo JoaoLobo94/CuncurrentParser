@@ -118,8 +118,9 @@ func startBatch(ctx context.Context, queries *db.Queries, current_user int32, cu
 	switch res {
 	case "Batch all amounts":
 		batchAllAmounts(ctx, queries, current_user, current_batch)
-	case "Choose individual transactions?":
-	// batchSpecificTransactions(ctx, current_user, queries)
+	case "Choose individual transactions":
+		// implement picking of individual transactions
+		// batchSpecificTransactions(ctx, queries, current_user, current_batch)
 	default:
 		Prompt(ctx, queries, current_user, current_batch)
 	}
@@ -130,6 +131,34 @@ func batchAllAmounts(ctx context.Context, queries *db.Queries, current_user int3
 	addToBatch(ctx, queries, current_user, roundedAmountsMap, current_batch)
 	Prompt(ctx, queries, current_user, current_batch)
 }
+// func batchSpecificTransactions(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32) {
+// 	fmt.Printf("How many numbers will you insert? \n")
+// 	len := 0
+// 	fmt.Scanln(&len)
+// 	input := make(map[int32]float64)
+
+// 	for i := 0; i < len; i++ {
+// 		fmt.Print("What is the number?:")
+// 		var number float64
+// 		fmt.Scanln(&number)
+// 		input[int32(i)] = number
+// 	}
+// 	roundedAmountsMap := roundUpUserInputs(input)
+// 	addToBatch(ctx, queries, current_user, roundedAmountsMap, current_batch)
+	// Prompt(ctx, queries, current_user, current_batch)
+// }
+
+// func roundUpUserInputs(input map[int32]float64) map[int32]float64 {
+// 	roundedAmountsMap := make(map[int32]float64)
+// 	for i, amount := range input {
+// 		wholeAmount := int64(amount)
+// 		decimalAmount := amount - float64(wholeAmount)
+// 		roundedUpAmounts := 1 - math.Round(decimalAmount*100)/100
+// 		roundedAmountsMap[i] = roundedUpAmounts
+
+// 	}
+// 	return roundedAmountsMap
+// }
 
 func roundUpAllActions(ctx context.Context, queries *db.Queries) map[int32]float64 {
 	actions, err := queries.ListActions(ctx)
@@ -156,7 +185,7 @@ func addToBatch(ctx context.Context, queries *db.Queries, current_user int32, ro
 		loopCounter++
 		valueForBatch += amount
 		if valueForBatch >= 100 {
-			current_batch = transactWhenBatchFull(ctx, queries,current_user, current_batch, valueForBatch)
+			current_batch = transactWhenBatchFull(ctx, queries, current_user, current_batch, valueForBatch)
 			valueForBatch = 0.0
 		} else if loopCounter == len(roundedAmountsMap) && valueForBatch < 100 {
 			queries.UpdateBatch(ctx, db.UpdateBatchParams{ID: current_batch, Amount: valueForBatch, Dispatched: false})
@@ -165,8 +194,8 @@ func addToBatch(ctx context.Context, queries *db.Queries, current_user int32, ro
 	}
 }
 
-func transactWhenBatchFull(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32, valueForBatch float64) int32{
-	queries.UpdateBatch(ctx, db.UpdateBatchParams{ID: current_batch ,Amount: valueForBatch, Dispatched: true})
+func transactWhenBatchFull(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32, valueForBatch float64) int32 {
+	queries.UpdateBatch(ctx, db.UpdateBatchParams{ID: current_batch, Amount: valueForBatch, Dispatched: true})
 	queries.CreateTransaction(ctx, db.CreateTransactionParams{Amount: valueForBatch, UserID: current_user})
 	newBatch, err := queries.CreateBatch(ctx, db.CreateBatchParams{UserID: current_user})
 	if err != nil {
