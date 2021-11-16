@@ -146,7 +146,7 @@ func batchTransactions(ctx context.Context, queries *db.Queries, current_user in
 		amount := action.Amount
 		wholeAmount := int64(amount)
 		decimalAmount := amount - float64(wholeAmount)
-		roundedAmount := 1 - math.Round(decimalAmount*100)/100
+		roundedAmount := 2 - math.Round(decimalAmount*100)/100
 		insertBatchChan := make(chan float64)
 		go addToBatch(ctx, queries, current_user, roundedAmount, insertBatchChan)
 		for msg := range insertBatchChan{
