@@ -130,7 +130,12 @@ func batchAllAmounts(ctx context.Context, queries *db.Queries, current_user int3
 	roundedAmountsChannel := make(chan float64)
 	go batchTransactions(ctx, queries, current_user,roundedAmountsChannel)
 	for msg := range roundedAmountsChannel{
-		fmt.Println(msg, " added to the batch", current_batch)
+		if msg < 100{
+		fmt.Println(msg, " added to the Batch, but not dispatched")
+		}
+		if msg >= 100{
+			fmt.Printf("Batch sent, new undispatched batch created")
+		}
 	}
 	Prompt(ctx, queries, current_user, current_batch)
 }
