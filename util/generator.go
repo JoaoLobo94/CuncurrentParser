@@ -27,7 +27,6 @@ func initializePromptWithData(ctx context.Context, queries *db.Queries, user db.
 		result[i] = min + rand.Float64()*(max-min)
 		jobs <- result[i]
 		go worker(jobs, ctx, queries, result[i], user)
-
 	}
 
 	fmt.Println("You just created ", len(result), " fake bank transactions")
