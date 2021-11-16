@@ -128,15 +128,14 @@ func startBatch(ctx context.Context, queries *db.Queries, current_user int32, cu
 }
 func batchAllAmounts(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32) {
 	roundedAmountsChannel := make(chan float64)
-	go batchTransactions(ctx, queries, current_user,roundedAmountsChannel, current_batch)
-	// go addToBatch(ctx, queries, current_user, roundedAmountsMap, current_batch)
+	go batchTransactions(ctx, queries, current_user,roundedAmountsChannel)
 	for msg := range roundedAmountsChannel{
 		fmt.Println(msg, " added to the batch", current_batch)
 	}
 	Prompt(ctx, queries, current_user, current_batch)
 }
 
-func batchTransactions(ctx context.Context, queries *db.Queries, current_user int32 ,roundedAmountsChannel chan float64, current_batch int32) {
+func batchTransactions(ctx context.Context, queries *db.Queries, current_user int32 ,roundedAmountsChannel chan float64) {
 	actions, _ := queries.ListActions(ctx)
 	for _, action := range actions {
 		amount := action.Amount
@@ -144,8 +143,7 @@ func batchTransactions(ctx context.Context, queries *db.Queries, current_user in
 		decimalAmount := amount - float64(wholeAmount)
 		roundedAmount := 1 - math.Round(decimalAmount*100)/100
 		insertBatchChan := make(chan float64)
-		// roundedAmountsChannel <- roundedAmount
-		go addToBatch(ctx, queries, current_user, roundedAmount, current_batch, insertBatchChan)
+		go addToBatch(ctx, queries, current_user, roundedAmount, insertBatchChan)
 		for msg := range insertBatchChan{
 			roundedAmountsChannel <- msg
 		}
@@ -154,7 +152,7 @@ func batchTransactions(ctx context.Context, queries *db.Queries, current_user in
 	close(roundedAmountsChannel)
 }
 
-func addToBatch(ctx context.Context, queries *db.Queries, current_user int32, roundedAmount float64, current_batch int32, insertBatchChan chan float64) {
+func addToBatch(ctx context.Context, queries *db.Queries, current_user int32, roundedAmount float64, insertBatchChan chan float64) {
 	batches, _ := queries.ListBatches(ctx)
 	lastCreatedBatch := batches[len(batches) -1]
 	batchAmount := lastCreatedBatch.Amount
