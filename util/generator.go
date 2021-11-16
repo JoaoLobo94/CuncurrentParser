@@ -3,11 +3,12 @@ package util
 import (
 	"context"
 	"fmt"
-	"github.com/JoaoLobo94/donut_test/db/sqlc"
-	_ "github.com/lib/pq"
 	"log"
 	"math/rand"
 	"time"
+
+	db "github.com/JoaoLobo94/donut_test/db/sqlc"
+	_ "github.com/lib/pq"
 )
 
 func Generate(ctx context.Context, queries *db.Queries) {
@@ -30,7 +31,7 @@ func initializePromptWithData(ctx context.Context, queries *db.Queries, user db.
 	}
 
 	fmt.Println("You just created ", len(result), " fake bank transactions")
-	
+
 	Prompt(ctx, queries, user.ID, StartBatches(ctx, queries, user.ID).ID)
 }
 
@@ -46,15 +47,15 @@ func generateUser(ctx context.Context, queries *db.Queries) db.User {
 	return user
 }
 
-func StartBatches(ctx context.Context, queries *db.Queries, current_user int32) db.Batch {
-	batch, err := queries.CreateBatch(ctx, db.CreateBatchParams{UserID: current_user})
+func StartBatches(ctx context.Context, queries *db.Queries, currentUser int32) db.Batch {
+	batch, err := queries.CreateBatch(ctx, db.CreateBatchParams{UserID: currentUser})
 	if err != nil {
 		log.Fatal(err)
 	}
 	return batch
 }
 
-func worker(jobs <-chan float64, ctx context.Context, queries *db.Queries, amount float64, user db.User){
+func worker(jobs <-chan float64, ctx context.Context, queries *db.Queries, amount float64, user db.User) {
 	for amount := range jobs {
 		queries.CreateAction(ctx, db.CreateActionParams{Amount: amount, UserID: user.ID})
 	}
