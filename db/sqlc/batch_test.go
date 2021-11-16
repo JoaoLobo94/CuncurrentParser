@@ -45,26 +45,26 @@ func TestGetBatch(t *testing.T) {
 	require.WithinDuration(t, batch1.CreatedAt, batch2.CreatedAt, time.Second)
 }
 
-// Need to figure out what is the problem here. Solve later
+func TestUpdateBatch(t *testing.T) {
+	batch1 := CreateRandomBatch(t)
 
-// func TestUpdateBatch(t *testing.T) {
-// 	batch1 := CreateRandomBatch(t)
-
-// 	arg := UpdateBatchParams{
-// 		ID:         batch1.ID,
-// 		Amount:     faker.Float64(),
-// 	}
+	arg := UpdateBatchParams{
+		ID:         batch1.ID,
+		Amount:     faker.Float64(),
+		Dispatched: true,
+	}
 	
-// 	batch2, err := testQueries.UpdateBatch(context.Background(), arg)
+	testQueries.UpdateBatch(context.Background(), arg)
+	batch2, err := testQueries.GetBatch(context.Background(), batch1.ID)
 
-// 	require.NoError(t, err)
-// 	require.NotEmpty(t, batch2)
-// 	require.Equal(t, batch1.ID, batch2.ID)
-// 	require.Equal(t, arg.Dispatched, batch2.Dispatched)
-// 	require.Equal(t, arg.Amount, batch2.Amount)
-// 	require.Equal(t, batch1.UserID, batch2.UserID)
-// 	require.WithinDuration(t, batch1.CreatedAt, batch2.CreatedAt, time.Second)
-// }
+	require.NoError(t, err)
+	require.NotEmpty(t, batch2)
+	require.Equal(t, batch1.ID, batch2.ID)
+	require.Equal(t, arg.Dispatched, batch2.Dispatched)
+	require.Equal(t, arg.Amount, batch2.Amount)
+	require.Equal(t, batch1.UserID, batch2.UserID)
+	require.WithinDuration(t, batch1.CreatedAt, batch2.CreatedAt, time.Second)
+}
 
 func TestListBatch(t *testing.T) {
 	for i := 0; i < 10; i++ {
