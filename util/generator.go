@@ -21,13 +21,13 @@ func initializePromptWithData(ctx context.Context, queries *db.Queries, user db.
 	min := 0.0
 	max := 99.9
 	result := make([]float64, numberToGenerate)
-	fmt.Println("Seeding... Please be patient")
+	fmt.Println("Seeding... Please be patient... We need all of them in the database to proceed")
+	jobs := make(chan float64, 100)
 	for i := range result {
 		result[i] = min + rand.Float64()*(max-min)
-		queries.CreateAction(ctx, db.CreateActionParams{
-			Amount: result[i],
-			UserID: user.ID,
-		})
+		jobs <- result[i]
+		go worker(jobs, ctx, queries, result[i], user)
+
 	}
 
 	fmt.Println("You just created ", len(result), " fake bank transactions")
@@ -53,4 +53,10 @@ func StartBatches(ctx context.Context, queries *db.Queries, current_user int32) 
 		log.Fatal(err)
 	}
 	return batch
+}
+
+func worker(jobs <-chan float64, ctx context.Context, queries *db.Queries, amount float64, user db.User){
+	for amount := range jobs {
+		queries.CreateAction(ctx, db.CreateActionParams{Amount: amount, UserID: user.ID})
+	}
 }
