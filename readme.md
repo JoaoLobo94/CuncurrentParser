@@ -24,16 +24,21 @@ make migrate_test_db
 ------------
 ### Running the app
 To run the app simply `go run main.go`, you will be prompted for you name, and how many fake random bank statements you will want to round up.
+
 You will be presented with a selection screen. Choose the option you feel like.
+
 You must run `make ulimit` before running the app, if you close your terminal window.
+
 When seeding the database bank transactions keep it < 150 for a smooth experience
+
 **You MUST reset the database after each batching, with the provided option**
+
 ## How it works
 ### Database
-There are only 4 entries. Users that represent the users; batches represent the batching of transactions; transactions represent a broadcasted amount from batch into the bank, and actions, that simulates user behaviour in their bank
+There are only 4 tables. Users that represent the users; batches represent the batching of transactions; transactions represent a broadcasted amount from batch into the bank, and actions, that simulates user behaviour in their bank
 ### Logic
 App works with concurrent workers, with the acceptance criteria from the assignment.
-We currently add to each batch 1 + rounded up amount so more batches get dispatched
+We currently add to each batch 1 + rounded up amount of user's bank transactin so more batches get dispatched
 
 ## Future improvments
 Allow user to pick individual transaction amounts, to simulate this user action. App currently only simulates user choosing an option where all low volume transactions are sent to the batch.
