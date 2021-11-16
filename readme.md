@@ -1,8 +1,11 @@
 # Donut test
 
 ## Getting started
+
 ### .env file
+
 You need a .env file for the application to get it's env variables. You can simply rename the `.env.sample` you have out of the box functionality
+
 ------------
 ### Setup
 1. Install docker, and start it. Get started at [Docker](http://https://www.docker.com/products/docker-desktop "Docker")
