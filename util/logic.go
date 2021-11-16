@@ -8,20 +8,19 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"log"
 	"math"
-	// "sync"
 )
 
 func Prompt(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32) {
 	res := ""
 	prompt := &survey.Select{
-		Message: "<---------What would you like to do now?--------->",
+		Message: "<---------What would you like to do now?--------->\n",
 		Options: []string{"Start Over --> This will erase all database",
 			"Start Batching low volume bank transactions. This will run concurrently",
 			"Which user am I?",
 			"View all batches",
 			"View all dispatched batches",
 			"View all transactions sent to the bank",
-			"View all low volume transactions in the bank"},
+			"View all seeded bank user bank transactions to round up"},
 	}
 	survey.AskOne(prompt, &res)
 
@@ -38,7 +37,7 @@ func Prompt(ctx context.Context, queries *db.Queries, current_user int32, curren
 		dispatchedBatches(ctx, queries, current_user, current_batch)
 	case "View all transactions sent to the bank":
 		listTransactions(ctx, queries, current_user, current_batch)
-	case "View all low volume transactions in the bank":
+	case "View all seeded bank user bank transactions to round up":
 		listActions(ctx, queries, current_user, current_batch)
 	default:
 		cleanUp(ctx, queries)
@@ -119,87 +118,54 @@ func startBatch(ctx context.Context, queries *db.Queries, current_user int32, cu
 	case "Batch all amounts":
 		batchAllAmounts(ctx, queries, current_user, current_batch)
 	case "Choose individual transactions":
-		// implement picking of individual transactions
-		// batchSpecificTransactions(ctx, queries, current_user, current_batch)
+		fmt.Printf("Not yet implemented, please check again later\n")
+		startBatch(ctx, queries, current_user, current_batch)
+
 	default:
 		Prompt(ctx, queries, current_user, current_batch)
 	}
 
 }
 func batchAllAmounts(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32) {
-	roundedAmountsMap := roundUpAllActions(ctx, queries)
-	addToBatch(ctx, queries, current_user, roundedAmountsMap, current_batch)
+	roundedAmountsChannel := make(chan float64)
+	go batchTransactions(ctx, queries, current_user,roundedAmountsChannel, current_batch)
+	// go addToBatch(ctx, queries, current_user, roundedAmountsMap, current_batch)
+	for msg := range roundedAmountsChannel{
+		fmt.Println(msg, " added to the batch", current_batch)
+	}
 	Prompt(ctx, queries, current_user, current_batch)
 }
-// func batchSpecificTransactions(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32) {
-// 	fmt.Printf("How many numbers will you insert? \n")
-// 	len := 0
-// 	fmt.Scanln(&len)
-// 	input := make(map[int32]float64)
 
-// 	for i := 0; i < len; i++ {
-// 		fmt.Print("What is the number?:")
-// 		var number float64
-// 		fmt.Scanln(&number)
-// 		input[int32(i)] = number
-// 	}
-// 	roundedAmountsMap := roundUpUserInputs(input)
-// 	addToBatch(ctx, queries, current_user, roundedAmountsMap, current_batch)
-	// Prompt(ctx, queries, current_user, current_batch)
-// }
-
-// func roundUpUserInputs(input map[int32]float64) map[int32]float64 {
-// 	roundedAmountsMap := make(map[int32]float64)
-// 	for i, amount := range input {
-// 		wholeAmount := int64(amount)
-// 		decimalAmount := amount - float64(wholeAmount)
-// 		roundedUpAmounts := 1 - math.Round(decimalAmount*100)/100
-// 		roundedAmountsMap[i] = roundedUpAmounts
-
-// 	}
-// 	return roundedAmountsMap
-// }
-
-func roundUpAllActions(ctx context.Context, queries *db.Queries) map[int32]float64 {
-	actions, err := queries.ListActions(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	roundedAmountsMap := make(map[int32]float64)
+func batchTransactions(ctx context.Context, queries *db.Queries, current_user int32 ,roundedAmountsChannel chan float64, current_batch int32) {
+	actions, _ := queries.ListActions(ctx)
 	for _, action := range actions {
 		amount := action.Amount
 		wholeAmount := int64(amount)
 		decimalAmount := amount - float64(wholeAmount)
-		roundedUpAmounts := 1 - math.Round(decimalAmount*100)/100
-		roundedAmountsMap[action.ID] = roundedUpAmounts
-
-	}
-	return roundedAmountsMap
-}
-
-func addToBatch(ctx context.Context, queries *db.Queries, current_user int32, roundedAmountsMap map[int32]float64, current_batch int32) {
-	valueForBatch := 0.0
-	loopCounter := 0
-	for _, amount := range roundedAmountsMap {
-		loopCounter++
-		valueForBatch += amount
-		if valueForBatch >= 100 {
-			current_batch = transactWhenBatchFull(ctx, queries, current_user, current_batch, valueForBatch)
-			valueForBatch = 0.0
-		} else if loopCounter == len(roundedAmountsMap) && valueForBatch < 100 {
-			queries.UpdateBatch(ctx, db.UpdateBatchParams{ID: current_batch, Amount: valueForBatch, Dispatched: false})
-			fmt.Printf("There is at least one undisptached batch in the DB.")
+		roundedAmount := 1 - math.Round(decimalAmount*100)/100
+		insertBatchChan := make(chan float64)
+		// roundedAmountsChannel <- roundedAmount
+		go addToBatch(ctx, queries, current_user, roundedAmount, current_batch, insertBatchChan)
+		for msg := range insertBatchChan{
+			roundedAmountsChannel <- msg
 		}
+
 	}
+	close(roundedAmountsChannel)
 }
 
-func transactWhenBatchFull(ctx context.Context, queries *db.Queries, current_user int32, current_batch int32, valueForBatch float64) int32 {
-	queries.UpdateBatch(ctx, db.UpdateBatchParams{ID: current_batch, Amount: valueForBatch, Dispatched: true})
-	queries.CreateTransaction(ctx, db.CreateTransactionParams{Amount: valueForBatch, UserID: current_user})
-	newBatch, err := queries.CreateBatch(ctx, db.CreateBatchParams{UserID: current_user})
-	if err != nil {
-		log.Fatal(err)
+func addToBatch(ctx context.Context, queries *db.Queries, current_user int32, roundedAmount float64, current_batch int32, insertBatchChan chan float64) {
+	batches, _ := queries.ListBatches(ctx)
+	lastCreatedBatch := batches[len(batches) -1]
+	batchAmount := lastCreatedBatch.Amount
+	amount := batchAmount + roundedAmount
+	if batchAmount < 100{
+		queries.UpdateBatch(ctx, db.UpdateBatchParams{ID: lastCreatedBatch.ID, Amount: amount, Dispatched: false})
+	}else if batchAmount >= 100{
+		queries.UpdateBatch(ctx, db.UpdateBatchParams{ID: lastCreatedBatch.ID, Amount: amount, Dispatched: true})
+		queries.CreateTransaction(ctx, db.CreateTransactionParams{Amount: amount, UserID: current_user})
+		queries.CreateBatch(ctx, db.CreateBatchParams{UserID: current_user})
 	}
-	return newBatch.ID
+	insertBatchChan <- batchAmount
+	close(insertBatchChan)
 }
