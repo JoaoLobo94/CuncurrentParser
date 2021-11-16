@@ -3,6 +3,9 @@ include .env
 install_golang_migrate:
 	brew install golang-migrate
 
+ulimit:
+	ulimit -n 4096
+
 install_sqlc:
 	brew install sqlc
 
@@ -33,4 +36,4 @@ migrate_test_db:
 sqlc:
 	sqlc generate
 
-.PHONY: install_golang_migrate install sqlc pull_postgres run_postgres createdb dropdb sqlc create_test_db drop_test_db migrate_test_db
+.PHONY: install_golang_migrate install sqlc pull_postgres run_postgres createdb dropdb sqlc create_test_db drop_test_db migrate_test_db utimit
