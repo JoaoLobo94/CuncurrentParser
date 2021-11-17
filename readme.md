@@ -35,7 +35,8 @@ When seeding the database bank transactions keep it < 150 for a smooth experienc
 
 ## How it works
 ### Database
-There are only 4 tables. Users that represent the users; batches represent the batching of transactions; transactions represent a broadcasted amount from batch into the bank, and actions, that simulates user behaviour in their bank
+There are only 4 tables. Users that represent the users; batches represent the batching of transactions; transactions represent a broadcasted amount from batch into the bank, and actions, that simulates user behaviour in their bank. You can see a picture of the schema in the project.
+
 ### Logic
 App works with concurrent workers, with the acceptance criteria from the assignment.
 We currently add to each batch 1 + rounded up amount of user's bank transactin so more batches get dispatched
