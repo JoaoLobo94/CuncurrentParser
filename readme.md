@@ -8,7 +8,7 @@ You need a .env file for the application to get it's env variables. You can simp
 
 ------------
 ### Setup
-1. Install docker, and start it. Get started at [Docker](www.docker.com/products/docker-desktop "Docker")
+1. Install docker, and start it. Get started at [Docker](www.docker.com/products/docker-desktop)
 2. There is a make file with all the commands you need. Run the following to have the app completly setup.  
 ```
 make install_golang_migrate
