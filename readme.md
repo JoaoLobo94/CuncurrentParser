@@ -4,7 +4,7 @@
 
 ### .env file
 
-You need a .env file for the application to get it's env variables. You can simply rename the `.env.sample` you have out of for the box functionality
+You need a .env file for the application to get it's env variables. You can simply rename the `.env.sample` you have for out of the box functionality
 
 ------------
 ### Setup
