@@ -1,5 +1,3 @@
-# Donut test
-
 ## Getting started
 
 ### .env file
